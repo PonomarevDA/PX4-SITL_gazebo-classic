@@ -71,6 +71,7 @@
 #include <Wind.pb.h>
 
 #include "mavlink_interface.h"
+#include "cyphal_interface.h"
 #include "msgbuffer.h"
 
 //! Default distance sensor model joint naming
@@ -149,6 +150,7 @@ private:
   float protocol_version_{2.0};
 
   std::unique_ptr<MavlinkInterface> mavlink_interface_;
+  std::unique_ptr<CyphalInterface> cyphal_interface_;
 
   std::string namespace_{kDefaultNamespace};
   std::string motor_velocity_reference_pub_topic_{kDefaultMotorVelocityReferencePubTopic};

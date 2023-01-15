@@ -25,6 +25,7 @@ GZ_REGISTER_MODEL_PLUGIN(GazeboMavlinkInterface);
 
 GazeboMavlinkInterface::GazeboMavlinkInterface() : ModelPlugin(){
       mavlink_interface_ = std::make_unique<MavlinkInterface>();
+      cyphal_interface_ = std::make_unique<CyphalInterface>();
 
 }
 
@@ -812,6 +813,7 @@ void GazeboMavlinkInterface::GpsCallback(GpsPtr& gps_msg, const int& id) {
   gps_data.id = id;
 
   mavlink_interface_->SendGpsMessages(gps_data);
+  cyphal_interface_->process();
 }
 
 void GazeboMavlinkInterface::GroundtruthCallback(GtPtr& groundtruth_msg) {

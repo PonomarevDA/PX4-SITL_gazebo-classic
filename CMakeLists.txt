@@ -184,6 +184,10 @@ endforeach()
 
 include_directories(
   include
+  external/Cyphal/libcanard
+  external/Cyphal/nunavut_c_headers
+  external/Cyphal/o1heap
+  external/Cyphal/socketcan
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${EIGEN3_INCLUDE_DIRS}
@@ -365,7 +369,16 @@ add_library(gazebo_vision_plugin SHARED src/gazebo_vision_plugin.cpp)
 add_library(gazebo_controller_interface SHARED src/gazebo_controller_interface.cpp)
 add_library(gazebo_gimbal_controller_plugin SHARED src/gazebo_gimbal_controller_plugin.cpp)
 add_library(gazebo_imu_plugin SHARED src/gazebo_imu_plugin.cpp)
-add_library(gazebo_mavlink_interface SHARED src/gazebo_mavlink_interface.cpp src/mavlink_interface.cpp)
+add_library(gazebo_mavlink_interface SHARED src/gazebo_mavlink_interface.cpp
+                                            src/mavlink_interface.cpp
+                                            src/cyphal_interface.cpp
+                                            src/cyphal/cyphal_node.cpp
+                                            src/cyphal/cyphal_publishers.cpp
+                                            src/cyphal/cyphal_subscribers.cpp
+                                            src/cyphal/cyphal_transport.cpp
+                                            external/Cyphal/libcanard/canard.c
+                                            external/Cyphal/o1heap/o1heap.c
+                                            external/Cyphal/socketcan/socketcan.c)
 add_library(gazebo_motor_model SHARED src/gazebo_motor_model.cpp)
 add_library(gazebo_multirotor_base_plugin SHARED src/gazebo_multirotor_base_plugin.cpp)
 add_library(gazebo_wind_plugin SHARED src/gazebo_wind_plugin.cpp)
