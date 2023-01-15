@@ -813,6 +813,7 @@ void GazeboMavlinkInterface::GpsCallback(GpsPtr& gps_msg, const int& id) {
   gps_data.id = id;
 
   mavlink_interface_->SendGpsMessages(gps_data);
+  cyphal_interface_->SendGpsMessages(gps_data);
   cyphal_interface_->process();
 }
 
@@ -1104,6 +1105,8 @@ void GazeboMavlinkInterface::BarometerCallback(BarometerPtr& baro_msg) {
   baro_data.abs_pressure = baro_msg->absolute_pressure();
   baro_data.pressure_alt = baro_msg->pressure_altitude();
   mavlink_interface_->UpdateBarometer(baro_data);
+  cyphal_interface_->UpdateBarometer(baro_data);
+
 }
 
 void GazeboMavlinkInterface::WindVelocityCallback(WindPtr& msg) {

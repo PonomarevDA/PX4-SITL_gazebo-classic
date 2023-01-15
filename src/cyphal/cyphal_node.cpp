@@ -71,6 +71,9 @@ int32_t CyphalNode::push(CanardTransferMetadata* metadata, size_t payload_size, 
         return 0;
     }
     auto res = canardTxPush(&queue, &canard_instance, 0, metadata, payload_size, payload);
+    if (res <= 0) {
+        std::cout << "tx failed" << res << std::endl;
+    }
     metadata->transfer_id++;
     return res;
 }

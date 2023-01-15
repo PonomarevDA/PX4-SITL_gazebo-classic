@@ -38,48 +38,31 @@
 
 #pragma once
 
-// #include <vector>
-// #include <regex>
-// #include <thread>
-// #include <mutex>
-// #include <condition_variable>
-// #include <deque>
-// #include <atomic>
-// #include <chrono>
-// #include <memory>
-// #include <sstream>
-// #include <cassert>
-// #include <stdexcept>
-// #include <boost/asio.hpp>
-// #include <boost/bind.hpp>
-// #include <boost/shared_array.hpp>
-// #include <boost/system/system_error.hpp>
-
-// #include <iostream>
-// #include <random>
-// #include <stdio.h>
-// #include <math.h>
-// #include <cstdint>
-// #include <cstdlib>
-// #include <string>
-// #include <sys/socket.h>
-// #include <netinet/in.h>
-
-// #include <Eigen/Eigen>
-// #include<Eigen/StdVector>
-
-// #include <development/mavlink.h>
-// #include "msgbuffer.h"
-
 #include "canard.h"
+#include "cyphal/barometer.hpp"
 #include "cyphal/cyphal_node.hpp"
+#include "cyphal/gnss.hpp"
+#include "mavlink_interface.h"
 
 
 class CyphalInterface {
 public:
     CyphalInterface();
-    void process();
     ~CyphalInterface();
+    void process();
+    void SendGpsMessages(const SensorData::Gps &data);
+    void UpdateBarometer(const SensorData::Barometer &data, const int id = 0);
+    void UpdateAirspeed(const SensorData::Airspeed &data, const int id = 0);
+    void UpdateIMU(const SensorData::Imu &data, const int id = 0);
+    void UpdateMag(const SensorData::Magnetometer &data, const int id = 0);
 private:
     CyphalNode _node;
+
+    GeodeticPointPublisher _geodetic_point_pub;
+    PrimitiveInteger16Publisher _sats_pub;
+    PrimitiveInteger16Publisher _status_pub;
+    PrimitiveInteger16Publisher _pdop_pub;
+
+    BaroPressurePublisher _baro_pressure_pub;
+    BaroTemperaturePublisher _baro_temperature_pub;
 };
