@@ -44,7 +44,8 @@ CyphalInterface::CyphalInterface() : _geodetic_point_pub(&_node, 65535),
                                      _status_pub(&_node, 65535),
                                      _pdop_pub(&_node, 65535),
                                      _baro_pressure_pub(&_node, 65535),
-                                     _baro_temperature_pub(&_node, 65535) {
+                                     _baro_temperature_pub(&_node, 65535),
+                                     _mag_pub(&_node, 65535) {
     std::cout << "CyphalInterface" << std::endl;
     std::cout << std::flush;
     _node.init();
@@ -99,7 +100,17 @@ void CyphalInterface::UpdateIMU(const SensorData::Imu &data, const int id) {
 }
 
 void CyphalInterface::UpdateMag(const SensorData::Magnetometer &data, const int id) {
+    static auto next_pub_time = std::chrono::steady_clock::now();
+    auto time_now = std::chrono::steady_clock::now();
 
+    if (time_now < next_pub_time) {
+        return;
+    }
+    next_pub_time = time_now + std::chrono::milliseconds(20);
+
+    uavcan_si_sample_magnetic_field_strength_Vector3_1_0 mag;
+    _mag_pub.setPortId(2020);
+    _mag_pub.publish(mag);
 }
 
 CyphalInterface::~CyphalInterface() {

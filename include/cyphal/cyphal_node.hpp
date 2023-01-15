@@ -18,8 +18,8 @@
 #include "socketcan.h"
 #include "o1heap.h"
 
-#define HEAP_SIZE           (1024*4)
-#define TX_QUEUE_FRAME_SIZE 400  ///< we need 314 bytes for port.List
+#define HEAP_SIZE           (1024*5)
+#define TX_QUEUE_FRAME_SIZE 600  ///< we need 314 bytes for port.List
 
 class CyphalNode {
 public:

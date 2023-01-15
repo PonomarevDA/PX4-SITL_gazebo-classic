@@ -585,6 +585,8 @@ void GazeboMavlinkInterface::OnUpdate(const common::UpdateInfo&  /*_info*/) {
     mavlink_interface_->pollForMAVLinkMessages();
   }
 
+  cyphal_interface_->process();
+
   // We need to send out heartbeats at a high rate until the connection is established,
   // otherwise PX4 on USB doesn't enable mavlink and the buffer fills up.
   if ((current_time - last_heartbeat_sent_time_).Double() > 1.0 || !mavlink_interface_->ReceivedHeartbeats()) {
@@ -684,6 +686,7 @@ void GazeboMavlinkInterface::ImuCallback(ImuPtr& imu_message, const int& id)
   imu_data.accel_b = Eigen::Vector3d(accel_b.X(), accel_b.Y(), accel_b.Z());
   imu_data.gyro_b = Eigen::Vector3d(gyro_b.X(), gyro_b.Y(), gyro_b.Z());
   mavlink_interface_->UpdateIMU(imu_data, id);
+  cyphal_interface_->UpdateIMU(imu_data, id);
 
   if (id == 0) {
     imu_received_ = true;
@@ -814,7 +817,6 @@ void GazeboMavlinkInterface::GpsCallback(GpsPtr& gps_msg, const int& id) {
 
   mavlink_interface_->SendGpsMessages(gps_data);
   cyphal_interface_->SendGpsMessages(gps_data);
-  cyphal_interface_->process();
 }
 
 void GazeboMavlinkInterface::GroundtruthCallback(GtPtr& groundtruth_msg) {
@@ -1091,12 +1093,14 @@ void GazeboMavlinkInterface::MagnetometerCallback(MagnetometerPtr& mag_msg, cons
   mag_data.mag_b = Eigen::Vector3d(mag_msg->magnetic_field().x(),
     mag_msg->magnetic_field().y(), mag_msg->magnetic_field().z());
   mavlink_interface_->UpdateMag(mag_data, id);
+  cyphal_interface_->UpdateMag(mag_data, id);
 }
 
 void GazeboMavlinkInterface::AirspeedCallback(AirspeedPtr& airspeed_msg, const int& id) {
   SensorData::Airspeed airspeed_data;
   airspeed_data.diff_pressure = airspeed_msg->diff_pressure();
   mavlink_interface_->UpdateAirspeed(airspeed_data, id);
+  cyphal_interface_->UpdateAirspeed(airspeed_data, id);
 }
 
 void GazeboMavlinkInterface::BarometerCallback(BarometerPtr& baro_msg) {
