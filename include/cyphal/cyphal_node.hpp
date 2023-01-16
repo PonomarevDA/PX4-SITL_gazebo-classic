@@ -17,9 +17,10 @@
 #include "cyphal/cyphal_publishers.hpp"
 #include "socketcan.h"
 #include "o1heap.h"
+#include <mutex>
 
-#define HEAP_SIZE           (1024*5)
-#define TX_QUEUE_FRAME_SIZE 600  ///< we need 314 bytes for port.List
+#define HEAP_SIZE           (1024*6)
+#define TX_QUEUE_FRAME_SIZE 40  ///< we need 314 bytes for port.List
 
 class CyphalNode {
 public:
@@ -47,6 +48,7 @@ private:
     HeartbeatPublisher heartbeat_pub;
     PortListPublisher port_list_pub;
     uint32_t error_counter = 0;
+    std::mutex transmit_mutex;
 };
 
 #endif  // CYPHAL_NODE_HPP_

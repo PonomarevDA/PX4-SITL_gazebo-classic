@@ -41,8 +41,9 @@
 #include "canard.h"
 #include "cyphal/barometer.hpp"
 #include "cyphal/cyphal_node.hpp"
-#include "cyphal/magnetometer.hpp"
 #include "cyphal/gnss.hpp"
+#include "cyphal/imu.hpp"
+#include "cyphal/magnetometer.hpp"
 #include "mavlink_interface.h"
 
 
@@ -68,4 +69,7 @@ private:
     BaroTemperaturePublisher _baro_temperature_pub;
 
     MagneticFieldPublisher _mag_pub;
+
+    AccelerometerPublisher _accel_pub;
+    GyroscopePublisher _gyro_pub;
 };

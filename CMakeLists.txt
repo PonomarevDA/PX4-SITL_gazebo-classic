@@ -377,8 +377,9 @@ add_library(gazebo_mavlink_interface SHARED src/gazebo_mavlink_interface.cpp
                                             src/cyphal/cyphal_subscribers.cpp
                                             src/cyphal/cyphal_transport.cpp
                                             src/cyphal/barometer.cpp
-                                            src/cyphal/magnetometer.cpp
                                             src/cyphal/gnss.cpp
+                                            src/cyphal/imu.cpp
+                                            src/cyphal/magnetometer.cpp
                                             external/Cyphal/libcanard/canard.c
                                             external/Cyphal/o1heap/o1heap.c
                                             external/Cyphal/socketcan/socketcan.c)

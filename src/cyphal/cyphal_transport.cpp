@@ -26,8 +26,7 @@ bool CyphalTransportCan::receive(CanardFrame* can_frame) {
     CanardMicrosecond out_timestamp_usec = 0;
     const size_t payload_buffer_size = 64;
     static uint8_t payload_buffer[payload_buffer_size];
-    const CanardMicrosecond timeout_usec = 1000;
-    bool loopback = false;
+    const CanardMicrosecond timeout_usec = 0;
 
     int16_t res = socketcanPop(_instance,
                                can_frame,
@@ -35,7 +34,7 @@ bool CyphalTransportCan::receive(CanardFrame* can_frame) {
                                payload_buffer_size,
                                payload_buffer,
                                timeout_usec,
-                               &loopback);
+                               NULL);
 
     if (res > 0) {
         can_frame->payload = payload_buffer;
@@ -49,6 +48,6 @@ bool CyphalTransportCan::transmit(const uint64_t current_time_us, const CanardTx
         return false;
     }
 
-    int16_t errno = socketcanPush(_instance, &transfer->frame, current_time_us);
-    return (errno > 0) ? true : false;
+    int16_t res = socketcanPush(_instance, &transfer->frame, current_time_us);
+    return (res > 0) ? true : false;
 }

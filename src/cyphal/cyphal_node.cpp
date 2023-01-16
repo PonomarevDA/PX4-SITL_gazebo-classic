@@ -44,8 +44,6 @@ void CyphalNode::process() {
     CanardFrame rx_frame;
     if (_transport.receive(&rx_frame)) {
         spinReceivedFrame(getCurrentMicroseconds() * 1000, &rx_frame);
-        std::cout << "Receive smth" << std::endl;
-        std::cout << std::flush;
     }
 
     // 2. spin application
@@ -67,6 +65,7 @@ void CyphalNode::process() {
 }
 
 int32_t CyphalNode::push(CanardTransferMetadata* metadata, size_t payload_size, const void *payload) {
+    std::unique_lock<std::mutex> lock(transmit_mutex);
     if (metadata->port_id == 0) {
         return 0;
     }
@@ -100,10 +99,6 @@ int8_t CyphalNode::subscribe(CyphalSubscriber* sub_info, size_t size, CanardTran
 void CyphalNode::processReceivedTransfer(const uint8_t redundant_interface_index,
                                          const CanardRxTransfer& transfer) {
     const CanardPortID PORT_ID = transfer.metadata.port_id;
-    if (PORT_ID == uavcan_node_Heartbeat_1_0_FIXED_PORT_ID_) {
-        asm("NOP");
-    }
-
     for (size_t sub_idx = 0; sub_idx < _sub_num; sub_idx++) {
         if (PORT_ID == _sub_info[sub_idx]->port_id) {
             _sub_info[sub_idx]->callback(transfer);
@@ -112,6 +107,7 @@ void CyphalNode::processReceivedTransfer(const uint8_t redundant_interface_index
 }
 
 void CyphalNode::spinTransmit() {
+    std::unique_lock<std::mutex> lock(transmit_mutex);
     for (const CanardTxQueueItem* ti = NULL; (ti = canardTxPeek(&queue)) != NULL;) {
         if ((0U == ti->tx_deadline_usec) || (ti->tx_deadline_usec > getCurrentMicroseconds())) {
             if (!_transport.transmit(getCurrentMicroseconds(), ti)) {
@@ -139,6 +135,8 @@ void CyphalNode::spinReceivedFrame(const CanardMicrosecond rx_timestamp_usec,
                                          NULL);
     if (result < 0) {
         error_counter++;
+        std::cout << "error " << error_counter << ": " << result << std::endl;
+        std::cout << std::flush;
     } else if (result == 1) {
         processReceivedTransfer(0, transfer);
         canard_instance.memory_free(&canard_instance, transfer.payload);

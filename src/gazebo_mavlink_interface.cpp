@@ -553,7 +553,6 @@ void GazeboMavlinkInterface::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf
 
 // This gets called by the world update start event.
 void GazeboMavlinkInterface::OnUpdate(const common::UpdateInfo&  /*_info*/) {
-
   std::unique_lock<std::mutex> lock(imu_received_mutex_);
 
   if (imu_received_once_) {

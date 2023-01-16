@@ -11,6 +11,10 @@
 #include "cyphal/cyphal_publishers.hpp"
 #include "cyphal/cyphal_node.hpp"
 
+#ifndef PORT_LIST_PUBLISHER
+    #define PORT_LIST_PUBLISHER 1
+#endif
+
 std::array<CyphalPublisher*, 15> CyphalPublisher::publishers;
 uint8_t CyphalPublisher::publishers_amount{0};
 
@@ -41,12 +45,6 @@ void HeartbeatPublisher::publish(const uavcan_node_Heartbeat_1_0& msg) {
 
 void PortListPublisher::publish() {
 #if PORT_LIST_PUBLISHER
-    auto crnt_time_ms = HAL_GetTick();
-    if (crnt_time_ms < next_pub_time_ms) {
-        return;
-    }
-    next_pub_time_ms = crnt_time_ms + 5000;
-
     static uavcan_node_port_List_0_1 msg{};
     uavcan_node_port_List_0_1_initialize_(&msg);
     uavcan_node_port_SubjectIDList_0_1_select_sparse_list_(&msg.publishers);
